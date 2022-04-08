@@ -2,36 +2,30 @@ package it.itvcoretechtest.http
 
 import cats.data.EitherT
 import cats.effect.IO
-import cats.implicits.{catsSyntaxApplicativeId, toBifunctorOps}
-import io.circe.syntax.EncoderOps
-import it.itvcoretechtest.{AssetId, AssetNotFound, CustomErrorType}
-import org.http4s.{Request, Status}
+import it.itvcoretechtest.AssetId
 import org.http4s.Status.NotFound
 import org.http4s.circe.CirceEntityCodec._
 import org.http4s.client.Client
-import org.http4s.implicits.http4sLiteralsSyntax
+import org.http4s.{Request, Uri}
 
+import scala.annotation.unused
 
-sealed trait MetadataResponseError
-case object MetadataNotFound extends MetadataResponseError
-case object DecodeFailure extends MetadataResponseError
-case class OtherError(status: Status, description: String) extends MetadataResponseError
 
 trait MetadataClient {
-  def getMeta(assetId: AssetId): EitherT[IO, CustomErrorType, MetaResponse]
-  def getAsset(assetId: AssetId): EitherT[IO, CustomErrorType, AssetResponse]
+  def getMetadata(assetId: AssetId): EitherT[IO, MetadataResponseError, MetadataResponse]
 }
 
-class HttpMetadataClient(client: Client[IO]) extends MetadataClient {
-  val baseUri = uri"https://ct-tech-test.play.cloud.itv.com/playground"
+class HttpMetadataClient(@unused baseUri: Uri, @unused client: Client[IO]) extends MetadataClient {
 
-  override def getMeta(assetId: AssetId): EitherT[IO, MetadataResponseError, MetaResponse] = {
-    val x: EitherT[IO, MetadataResponseError, MetaResponse] = client.run(Request[IO](uri = baseUri / assetId.value / "metadata")).use(r => r.status match {
-      case s if s.isSuccess => r.attemptAs[MetaResponse].leftMap(_ => DecodeFailure).leftWiden[MetadataResponseError]
-      case NotFound         => EitherT.leftT[IO, MetaResponse](MetadataNotFound).leftWiden[MetadataResponseError]
-      case e @ _            => EitherT.leftT[IO, MetaResponse](OtherError(e, e.reason)).leftWiden[MetadataResponseError]
-    })
-    x
+  override def getMetadata(assetId: AssetId): EitherT[IO, MetadataResponseError, MetadataResponse] = {
+//    EitherT(
+//      client.run(Request[IO](uri = baseUri / assetId.value / "metadata")).use(r => r.status match {
+//        case s if s.isSuccess => r.attemptAs[MetaResponse].leftMap(_ => DecodeFailure).value
+//        case NotFound         => IO.pure(Left(MetadataNotFound))
+//        case e @ _            => IO.pure(Left(OtherError(e, e.reason)))
+//      })
+//    )
+    ???
   }
 
 

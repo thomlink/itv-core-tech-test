@@ -1,9 +1,8 @@
 package it
 
-import io.circe.generic.JsonCodec
-
 package object itvcoretechtest {
-  @JsonCodec(encodeOnly = true)
-  case class AssetId(value: String)
-  case class ThumbnailTimestamp(seconds: Int)
+
+  case class VideoAssetId(value: String)
+  case class Filepath(value: String)
+  case class Timestamp(value: Int)
 }

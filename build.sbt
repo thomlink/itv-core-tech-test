@@ -1,10 +1,11 @@
-val Http4sVersion = "0.21.24"
+val Http4sVersion = "0.23.6"
 val CirceVersion = "0.13.0"
 val MunitVersion = "0.7.20"
 val LogbackVersion = "1.2.3"
 val MunitCatsEffectVersion = "0.13.0"
 val ScalatestVersion = "3.2.3"
 val ScalacheckVersion = "1.15.3"
+val CirisVersion = "2.3.1"
 
 
 lazy val root = (project in file("."))
@@ -19,6 +20,7 @@ lazy val root = (project in file("."))
       "org.http4s"      %% "http4s-circe"        % Http4sVersion,
       "org.http4s"      %% "http4s-dsl"          % Http4sVersion,
       "io.circe"        %% "circe-generic"       % CirceVersion,
+      "io.circe"        %% "circe-generic-extras"       % CirceVersion,
       "org.scalameta"   %% "munit"               % MunitVersion           % Test,
       "org.typelevel"   %% "munit-cats-effect-2" % MunitCatsEffectVersion % Test,
       "ch.qos.logback"  %  "logback-classic"     % LogbackVersion,
@@ -26,7 +28,8 @@ lazy val root = (project in file("."))
       "org.scalatest" %% "scalatest" % ScalatestVersion % "it, test",
       "org.scalatestplus" %% "scalacheck-1-15" % "3.2.3.0" % "it, test",
       "org.scalacheck" %% "scalacheck" % ScalacheckVersion % "it, test",
-      "com.typesafe.scala-logging" %% "scala-logging" % "3.9.3"
+      "com.typesafe.scala-logging" %% "scala-logging" % "3.9.3",
+      "is.cir" %% "ciris" % CirisVersion,
     ),
     addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.13.0" cross CrossVersion.full),
     addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
