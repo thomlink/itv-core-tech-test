@@ -8,25 +8,23 @@ import it.itvcoretechtest.{Filepath, VideoAssetId}
 import scala.annotation.unused
 
 trait ChecksumService {
-  def verifyChecksum(assetId: VideoAssetId): IO[ChecksumValidationResult]
+  def verifyChecksum(assetId: VideoAssetId): IO[Either[ChecksumValidationFailure, Unit]]
 }
 
-class ChecksumVerifierService(calculator: ChecksumCalculator, metadataClient: MetadataClient) extends ChecksumService {
-  override def verifyChecksum(assetId: VideoAssetId): IO[ChecksumValidationResult] = for {
-    fetchedChecksum <- metadataClient.getMetadata(AssetId(assetId.value)).value
+class ChecksumVerifierService(calculator: ChecksumCalculator) extends ChecksumService {
+  override def verifyChecksum(assetId: VideoAssetId): IO[Either[ChecksumValidationFailure, Unit]] = for {
+    fetchedChecksum <- calculator.getChecksum(assetId).value
     calculatedChecksum <- calculator.calculateAssetChecksum(assetId).value
   } yield {
     fetchedChecksum match {
-      case Left(value) => Failure("")
       case Right(metadata) => calculatedChecksum match {
-        case Left(value) => Failure("")
-        case Right(checksum) => if (doChecksumsMatch(metadata, checksum))
-          Success
-        else
-          Failure("")
+        case e2 @ Left(_) => e2
+        case Right(checksum) if doChecksumsMatch(metadata, checksum) => Right(())
+        case _ => Left(InvalidChecksum)
       }
+      case e @ _ => e
     }
   }
 
-  def doChecksumsMatch(@unused metadata: MetadataResponse, @unused checksum: CalculatedChecksum): Boolean = ???
+  private def doChecksumsMatch(@unused metadata: MetadataResponse, @unused checksum: CalculatedChecksum): Boolean = ???
 }

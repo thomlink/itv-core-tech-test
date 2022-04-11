@@ -1,7 +1,7 @@
 package it.itvcoretechtest
 
 package object service {
-  sealed trait ChecksumValidationResult
-  case object Success extends ChecksumValidationResult
-  case class Failure(reason: String) extends ChecksumValidationResult
+  trait ChecksumValidationFailure extends ThumbnailAppError
+  case object InvalidChecksum extends ChecksumValidationFailure
+  case class Other() extends ChecksumValidationFailure
 }

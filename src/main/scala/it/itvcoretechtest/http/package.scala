@@ -4,6 +4,7 @@ import io.circe.Decoder
 import io.circe.generic.JsonCodec
 import org.http4s.Status
 import io.circe.generic.extras.semiauto.deriveUnwrappedDecoder
+import it.itvcoretechtest.service.ChecksumValidationFailure
 
 package object http {
 
@@ -99,7 +100,7 @@ package object http {
                          )
 
 
-  sealed trait MetadataResponseError
+  sealed trait MetadataResponseError extends ChecksumValidationFailure
   case object MetadataNotFound extends MetadataResponseError
   case object DecodeFailure extends MetadataResponseError
   case class OtherError(status: Status, description: String) extends MetadataResponseError

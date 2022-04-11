@@ -8,14 +8,14 @@ import it.itvcoretechtest.http.{AssetId, MetadataClient, MetadataResponse, Metad
 
 
 trait ChecksumCalculator {
-  def getChecksum(assetId: VideoAssetId): EitherT[IO, MetadataResponseError, MetadataResponse]
-  def calculateAssetChecksum(assetId: VideoAssetId): EitherT[IO, MetadataResponseError, CalculatedChecksum]
+  def getChecksum(assetId: VideoAssetId): IO[Either[MetadataResponseError, MetadataResponse]]
+  def calculateAssetChecksum(assetId: VideoAssetId): IO[Either[ChecksumCalculationError, CalculatedChecksum]]
 }
 
 class ChecksumCalculatorImpl(client: MetadataClient) extends ChecksumCalculator{
-  override def getChecksum(assetId: VideoAssetId): EitherT[IO, MetadataResponseError, MetadataResponse] = client.getMetadata(AssetId(assetId.value))
+  override def getChecksum(assetId: VideoAssetId): IO[Either[MetadataResponseError, MetadataResponse]] = client.getMetadata(AssetId(assetId.value)).value
 
-  override def calculateAssetChecksum(assetId: VideoAssetId): EitherT[IO, MetadataResponseError, CalculatedChecksum] = ???
+  override def calculateAssetChecksum(assetId: VideoAssetId): IO[Either[ChecksumCalculationError, CalculatedChecksum]] = ???
 }
 
 

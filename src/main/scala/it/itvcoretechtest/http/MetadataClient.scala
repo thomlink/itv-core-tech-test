@@ -2,7 +2,6 @@ package it.itvcoretechtest.http
 
 import cats.data.EitherT
 import cats.effect.IO
-import it.itvcoretechtest.AssetId
 import org.http4s.Status.NotFound
 import org.http4s.circe.CirceEntityCodec._
 import org.http4s.client.Client

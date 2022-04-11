@@ -1,8 +1,10 @@
 package it.itvcoretechtest
 
 import cats.effect.{ExitCode, IO, IOApp}
+import it.itvcoretechtest.checksum.ChecksumCalculatorImpl
 import it.itvcoretechtest.config.Config.loadConfig
 import it.itvcoretechtest.http.{HttpMetadataClient, MetadataClient}
+import it.itvcoretechtest.service.{ChecksumService, ChecksumVerifierService, ThumbnailGeneratorService}
 import org.http4s.blaze.client.BlazeClientBuilder
 
 object Main extends IOApp {
@@ -22,12 +24,23 @@ object Main extends IOApp {
         }
 
         config <- loadConfig
+
         metadataClient = new HttpMetadataClient(config.itvBaseUri, client)
-        thumbnailService = new ThumbnailApp(metadataClient)
+        checksumCalculator = new ChecksumCalculatorImpl(metadataClient)
+        checksumService = new ChecksumVerifierService(checksumCalculator)
+        thumbnailGenerator = new ThumbnailGeneratorService
 
-        _ <- thumbnailService.run(videoAssetId, timestamp, filepath)
+        thumbnailApp = new ThumbnailApp(checksumService, thumbnailGenerator)
 
-      } yield ExitCode.Success
+        result <- thumbnailApp.run(videoAssetId, timestamp, filepath)
+
+      } yield result match {
+        case Left(error) => {
+          println(error.toString)
+          ExitCode.Error
+        }
+        case Right(_) => ExitCode.Success
+      }
     }
   }
 }
