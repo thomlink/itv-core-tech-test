@@ -35,3 +35,23 @@ lazy val root = (project in file("."))
     addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
     testFrameworks += new TestFramework("munit.Framework")
   )
+
+scalacOptions ++= Seq("-Ymacro-annotations")
+
+//scalacOptions ++= Seq(
+//  "-deprecation",
+//  "-encoding",
+//  "UTF-8",
+//  "-language:higherKinds",
+//  "-language:postfixOps",
+//  "-feature",
+//  "-Ypartial-unification",
+//  "-Xfatal-warnings",
+//  "-Ywarn-unused:implicits",
+//  "-Ywarn-unused:imports",
+//  "-Ywarn-unused:locals",
+//  "-Ywarn-unused:params",
+//  "-Ywarn-unused:patvars",
+//  "-Ywarn-unused:privates",
+//  "-Ywarn-value-discard"
+//)

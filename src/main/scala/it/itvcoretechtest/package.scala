@@ -1,8 +1,8 @@
 package it
 
-package object itvcoretechtest {
+package itvcoretechtest {
 
   case class VideoAssetId(value: String)
   case class Filepath(value: String)
-  case class Timestamp(value: Int)
+  case class ThumbnailTimestamp(value: Int)
 }
