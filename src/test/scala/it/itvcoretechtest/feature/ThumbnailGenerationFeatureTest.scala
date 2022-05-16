@@ -1,7 +1,7 @@
 package it.itvcoretechtest.feature
 
 import it.itvcoretechtest._
-import it.itvcoretechtest.checksum.{ChecksumCalculationFailure, MetadataNotFound}
+import it.itvcoretechtest.checksum.{Md5CalculationFailure, MetadataNotFound}
 import it.itvcoretechtest.service.{InvalidChecksum, TimestampOutOfBounds}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
@@ -42,7 +42,7 @@ class ThumbnailGenerationFeatureTest extends AnyFunSuite with Matchers {
 
     withTestApp(appState) { testApp =>
       testApp.generateThumbnail(validAssetId, validThumbnailTimestamp, invalidFilePath).value.map{ result =>
-        result shouldBe Left(ChecksumCalculationFailure)
+        result shouldBe Left(Md5CalculationFailure)
       }
     }
 

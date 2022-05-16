@@ -7,26 +7,33 @@ import it.itvcoretechtest.service.ChecksumValidationFailure
 import org.http4s.Status
 
 package checksum {
-  case class CalculatedChecksum()
+  case class CalculatedChecksum(md5: Md5,
+                                sha1: Sha1,
+                                sha256: Sha256)
 
   sealed trait ChecksumCalculationError extends ChecksumValidationFailure
-  case object ChecksumCalculationFailure extends ChecksumCalculationError
+  case object Sha1CalculationFailure extends ChecksumCalculationError
+  case object Sha256CalculationFailure extends ChecksumCalculationError
+  case object Md5CalculationFailure extends ChecksumCalculationError
+  case object OtherError extends ChecksumCalculationError
 
 
     @JsonCodec(encodeOnly = true)
     case class AssetId(value: String)
 
-    case class Sha1(value: String)
+    sealed trait Hash
+
+    case class Sha1(value: String) extends Hash
     object Sha1 {
       implicit val d: Decoder[Sha1] = deriveUnwrappedDecoder
     }
 
-    case class Sha256(value: String)
+    case class Sha256(value: String) extends Hash
     object Sha256 {
       implicit val d: Decoder[Sha256] = deriveUnwrappedDecoder
     }
 
-    case class Md5(value: String)
+    case class Md5(value: String) extends Hash
     object Md5 {
       implicit val d: Decoder[Md5] = deriveUnwrappedDecoder
     }

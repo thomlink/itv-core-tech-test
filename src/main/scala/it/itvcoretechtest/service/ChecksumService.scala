@@ -20,5 +20,8 @@ class ChecksumVerifierService(checksumClient: ChecksumClient) extends ChecksumSe
     case (Right(m), Right(c)) => if (doChecksumsMatch(m, c)) Right(()) else Left(InvalidChecksum)
   }
 
-  private def doChecksumsMatch(@unused metadata: MetadataResponse, @unused checksum: CalculatedChecksum): Boolean = ???
+  private def doChecksumsMatch(@unused metadata: MetadataResponse, @unused checksum: CalculatedChecksum): Boolean =
+    metadata.md5 == checksum.md5 &&
+    metadata.sha1 == checksum.sha1 &&
+    metadata.sha256 == checksum.sha256
 }
