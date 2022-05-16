@@ -6,6 +6,7 @@ import io.circe.generic.extras.semiauto.deriveUnwrappedDecoder
 import it.itvcoretechtest.service.ChecksumValidationFailure
 import org.http4s.Status
 
+
 package checksum {
   case class CalculatedChecksum(md5: Md5,
                                 sha1: Sha1,
@@ -15,7 +16,6 @@ package checksum {
   case object Sha1CalculationFailure extends ChecksumCalculationError
   case object Sha256CalculationFailure extends ChecksumCalculationError
   case object Md5CalculationFailure extends ChecksumCalculationError
-  case object OtherError extends ChecksumCalculationError
 
 
     @JsonCodec(encodeOnly = true)

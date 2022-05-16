@@ -1,14 +1,13 @@
 package it.itvcoretechtest.checksum
 
 import cats.effect.IO
-import cats.implicits._
 import fs2.io.file.{Files, Path}
 import fs2.{hash, text}
 import it.itvcoretechtest._
 import org.http4s.Status.NotFound
-import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
 import org.http4s.client.Client
 import org.http4s.{Request, Uri}
+import org.http4s.circe.CirceEntityCodec._
 
 import scala.annotation.unused
 
@@ -38,39 +37,33 @@ class ChecksumClientImpl(@unused client: Client[IO], @unused baseUri: Uri) exten
       .readAll(Path(filepath.value))
       .through(hash.md5)
       .through(text.hex.encode)
+      .map(Md5(_))
       .compile
       .last
-
-
-    a = Either.fromOption(md5, Md5CalculationFailure).map(Md5(_))
-
 
     sha1 <- Files[IO]
       .readAll(Path(filepath.value))
       .through(hash.sha1)
       .through(text.hex.encode)
+      .map(Sha1(_))
       .compile
       .last
-
-
-
-    b = Either.fromOption(sha1, Sha1CalculationFailure).map(Sha1(_))
 
 
     sha256 <- Files[IO]
       .readAll(Path(filepath.value))
       .through(hash.sha256)
       .through(text.hex.encode)
+      .map(Sha256(_))
       .compile
       .last
 
-    c = Either.fromOption(sha256, Sha256CalculationFailure).map(Sha256(_))
 
-
-
-  } yield (a, b, c) match {
-    case (Right(m), Right(s1), Right(s256)) => Right(CalculatedChecksum(m, s1, s256))
-    case e @ _ => Left(OtherError)
+  } yield (md5, sha1, sha256) match {
+    case (Some(m), Some(s1), Some(s256)) => Right(CalculatedChecksum(m, s1, s256))
+    case (None, _, _) => Left(Md5CalculationFailure)
+    case (_, None, _) => Left(Sha1CalculationFailure)
+    case (_, _, None) => Left(Sha256CalculationFailure)
   }
 
 }

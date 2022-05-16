@@ -4,8 +4,6 @@ import cats.effect.IO
 import it.itvcoretechtest.{Filepath, VideoAssetId}
 import it.itvcoretechtest.checksum.{CalculatedChecksum, ChecksumClient, MetadataResponse}
 
-import scala.annotation.unused
-
 trait ChecksumService {
   def verifyChecksum(assetId: VideoAssetId, filePath: Filepath): IO[Either[ChecksumValidationFailure, Unit]]
 }
@@ -20,7 +18,7 @@ class ChecksumVerifierService(checksumClient: ChecksumClient) extends ChecksumSe
     case (Right(m), Right(c)) => if (doChecksumsMatch(m, c)) Right(()) else Left(InvalidChecksum)
   }
 
-  private def doChecksumsMatch(@unused metadata: MetadataResponse, @unused checksum: CalculatedChecksum): Boolean =
+  private def doChecksumsMatch(metadata: MetadataResponse, checksum: CalculatedChecksum): Boolean =
     metadata.md5 == checksum.md5 &&
     metadata.sha1 == checksum.sha1 &&
     metadata.sha256 == checksum.sha256

@@ -16,6 +16,6 @@ trait App {
 class ThumbnailApp(checksumService: ChecksumService, thumbnailGenerator: ThumbnailGenerator) extends App {
 
   override def generateThumbnail(assetId: VideoAssetId, timestamp: ThumbnailTimestamp, filepath: Filepath): EitherT[IO, ThumbnailAppError, Unit] =
-    EitherT(checksumService.verifyChecksum(assetId, filepath).flatMap(_ => thumbnailGenerator.generateThumbnail(assetId)))
+    EitherT(checksumService.verifyChecksum(assetId, filepath).flatMap(_ => thumbnailGenerator.generateThumbnail(assetId, timestamp)))
 
 }
